@@ -101,7 +101,10 @@ void decryption(unsigned char key, unsigned char shift, const int *encrypted, in
 int message_score(const char *msg)
 {
     int score = 0;
-    char* token = strtok(msg, " ");
+    char temp[MAX];
+    memcpy(temp, msg, MAX);
+
+    char* token = strtok(temp, " ");
     // loop through the string to extract all other tokens
     while (token != NULL) {
         if (in_dict(token))
@@ -111,6 +114,8 @@ int message_score(const char *msg)
 
     return score;
 }
+
+
 
 //search using all the (key, shift) combinations
 //to find the original message
@@ -130,7 +135,15 @@ void search(const int *encrypted, int len, char *message)
 			if(score > max_score)
 			{	
 				max_score = score;
-				strcpy(message, decrypted);
+                strcpy(message, decrypted);
+                //char* newline = strtok(decrypted, "\n");
+                //while (newline != NULL) {
+                //    strcat(message, newline);
+                //    strcat(message, "\n");
+                //    newline = strtok(NULL, "\n");
+                //}
+                message[len] = 0;
+
 			}
         }
     }
@@ -157,6 +170,7 @@ int read_encrypted(char *filename, int *encrypted)
     return len;
 }
 
+
 //Do not change the main() function
 int main(int argc, char *argv[])
 {
@@ -172,11 +186,11 @@ int main(int argc, char *argv[])
     //int should_be_zero_1 = in_dict("igor");
     //int should_be_one_2 = in_dict("miscellaneous");
 
-    //char test1 = '%';
-    //unsigned char k = 100;
-    //unsigned char shift = 22;
-    //int t1 = encrypt1(k, shift, test1);
-    //char back1 = decrypt1(k, shift, t1);
+    char test1 = '\'';
+    unsigned char k = 100;
+    unsigned char shift = 22;
+    int t1 = encrypt1(k, shift, test1);
+    char back1 = decrypt1(k, shift, t1);
 
 	int encrypted[MAX];
 	int len = read_encrypted(argv[1], encrypted);
